@@ -3,24 +3,38 @@
 <head>
     <title></title>
 	<meta charset="utf-8" />
-    <link rel="stylesheet" href="CSS/bootstrap.css" />
     <link rel="stylesheet" href="CSS/Custom.css" />
+    <link rel="stylesheet" href="CSS/tooltip.css" />
+    <link rel="stylesheet" href="CSS/bootstrap.css" />
     <script type="text/javascript" src="JS/jquery-2.1.1.js"></script>
     <script type="text/javascript" src="JS/d3.min.js"></script>
+    <script type="text/javascript" src="JS/Tooltip.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="display: none">
         <div class="row">
             <div class="col-lg-12" style="text-align:center">
                 <h1>Movie Analytics Project</h1>
                 <h2>Written By: Peng Gao</h2>
+                <p>Welcome <span class="user"></span> to a analytics application taking a look at some of the movies
+                that have been released in the last two years.</p>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Percent of Genres</div>
+                    <div class="panel-heading">
+                        <span>Genre Percentage</span>
+                        <div id="grenrePieInfo" style="float:right" data-tooltip>
+                            <img src="Imgs/info.png" style="height:24px;margin-top:-7px;"/>
+                        </div>
+                    </div>
                     <div class="panel-body">
+                        <p><span class="user"></span>, this pie chart shows the percentage of the genre of the movies analyzed. When
+                        you mouse over a section of the pie chart, the center will update and show you the number of movies in that
+                        genre and the percentage of the total that the genre makes up. You can also click and add sections of the pie together.</p>
+                        <p>This chart was a lot of fun and one of the charts that I spent the most time on. I must have spent a week looking over
+                        fiddles and codepen examples until I was able to get an understanding of how this works.</p>
                         <div id="genrePie" style="width:100%; height:350px;"></div>
                     </div>
                 </div>
@@ -29,8 +43,18 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Average Budget for IMDB Scores</div>
+                    <div class="panel-heading">
+                        <span>Budget vs IMDB Score</span>
+                        <div id="budgetIMDBInfo" style="float:right" data-tooltip>
+                            <img src="Imgs/info.png" style="height:24px;margin-top:-7px;" />
+                        </div>
+                    </div>
                     <div class="panel-body">
+                        <p><span class="user"></span>! This graph is pretty neat. The x axis is the budget for the movie and the y axis
+                        is the resulting IMDB score. As you can see, if we drew a best fit line, the higher the budget, the higher
+                        the resulting IMDB score. If you mouse over the graph a dtop will follow the x mouse position but will stay on the path of the line!
+                        I was going to take this a step further, but d3 is quite complicated. I wanted to have a tooltip pop up for each point of data
+                        that is moused over. Maybe next year!</p>
                         <div id="budgetToScore" style="width:100%; height:350px;"></div>
                     </div>
                 </div>
@@ -39,8 +63,17 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Budget to Gross</div>
+                    <div class="panel-heading">
+                        <span>Budget vs Gross Income</span>
+                        <div id="budgetIncomeInfo" style="float:right" data-tooltip>
+                            <img src="Imgs/info.png" style="height:24px;margin-top:-7px;" />
+                        </div>
+                    </div>
                     <div class="panel-body">
+                        <p>So <span class="user"></span>, this graph was the hardest one that I worked on. You would think drawing bars is easy, but when
+                        the application doesnt know how many bars are going to be plotted, how can it determine the width of each bar? And how can it know what the proper 
+                        ranges are for the domain and range. This was a challenge, but the basis of the chart is here.</p>
+                        <p>The x axis represents the budget for the movies while the y axis shows the gross income of the movie.</p>
                         <div id="budgetToGross" style="width:100%; height:350px;"></div>
                     </div>
                 </div>

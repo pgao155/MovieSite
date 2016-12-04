@@ -39,3 +39,7 @@
   .tick text {
       fill: lightgrey;
   }
+
+  .bar {
+      fill: steelblue;
+  }

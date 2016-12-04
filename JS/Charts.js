@@ -1,4 +1,27 @@
-﻿// CREATE BAR CHART FOR BUDGET TO GROSS
+﻿var username = prompt("Please enter your name");
+$('.user').html(username);
+
+// Initialize tooltips
+
+$('#grenrePieInfo').prop('title', 'Pie chart depicting the percentage of the genre of movies analyzed');
+$('#budgetIMDBInfo').prop('title', 'Line chart showing the budget (x axis) and resulting IMDB score (y axis)');
+$('#budgetIncomeInfo').prop('title', 'Bar chart showing the budget (x axis) and resulting gross income (y axis)');
+
+var style = prompt("Would you prefer a light theme or a dark theme (light/dark):");
+switch (style) {
+    case 'light':
+        $('head').append('<link rel="stylesheet" href="CSS/bootstrap.light.css" type="text/css" />');
+        break;
+    case 'dark':
+        $('head').append('<link rel="stylesheet" href="CSS/bootstrap.dark.css" type="text/css" />');
+        break;
+    default:
+        break;
+}
+//$('link[rel=stylesheet][href~="CSS/bootstrap.css"]').remove();
+$('.container').show();
+
+// CREATE BAR CHART FOR BUDGET TO GROSS
 
 budgetGrossBar();
 
@@ -41,7 +64,7 @@ function budgetGrossBar() {
         var xMin = 0;
         var xMax = d3.max(data, function (d) { return d.key; });
 
-        var ticks = [0, xMax];
+        var ticks = [xMax];
 
         var xAxis = d3.svg.axis()
         .scale(x)
@@ -75,7 +98,7 @@ function budgetGrossBar() {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", "-.55em")
-        .attr("transform", "rotate(-90)");
+        .attr("transform", "rotate(-25)");
 
         svg.append("g")
             .attr("class", "y axis")
@@ -216,6 +239,10 @@ function budgetGrossBar() {
 budgetScoreLine();
 
 function budgetScoreLine() {
+
+    console.log("KAJSDKLJAS");
+    console.log($('#budgetToScore').width());
+
     // define dimensions of graph
     var m = [80, 80, 80, 80]; // margins
     var w = $('#budgetToScore').width() - m[1] - m[3]; // width
@@ -718,7 +745,7 @@ function createGenrePie() {
 
         var newData = [{
             "type": "Genre",
-            "unit": "Num Movies",
+            "unit": " Num Movies",
             "data": genreTotals,
             "total": total
         }];
