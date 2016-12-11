@@ -7,6 +7,7 @@ $('#grenrePieInfo').prop('title', 'Pie chart depicting the percentage of the gen
 $('#budgetIMDBInfo').prop('title', 'Line chart showing the budget (x axis) and resulting IMDB score (y axis)');
 $('#budgetIncomeInfo').prop('title', 'Bar chart showing the budget (x axis) and resulting gross income (y axis)');
 
+// Change the CSS stylesheet based on the user's preference
 var style = prompt("Would you prefer a light theme or a dark theme (light/dark):");
 switch (style) {
     case 'light':
@@ -18,7 +19,8 @@ switch (style) {
     default:
         break;
 }
-//$('link[rel=stylesheet][href~="CSS/bootstrap.css"]').remove();
+
+// Show the page after the user decided the style
 $('.container').show();
 
 // CREATE BAR CHART FOR BUDGET TO GROSS
@@ -106,129 +108,6 @@ function budgetGrossBar() {
             .call(yAxis);
 
     });
-
-
-
-    return;
-
-
-
-
-    var w = 600;
-    var h = 250;
-
-    console.log("Creating Budget Gross Bar");
-    /*
-    var dataset = [
-        { key: 0, value: 5 },
-        { key: 1, value: 10 },
-        { key: 2, value: 13 },
-        { key: 3, value: 19 },
-        { key: 4, value: 21 },
-        { key: 5, value: 25 },
-        { key: 6, value: 22 },
-        { key: 7, value: 18 },
-        { key: 8, value: 15 },
-        { key: 9, value: 13 },
-        { key: 10, value: 11 },
-        { key: 11, value: 12 },
-        { key: 12, value: 15 },
-        { key: 13, value: 20 },
-        { key: 14, value: 18 },
-        { key: 15, value: 17 },
-        { key: 16, value: 16 },
-        { key: 17, value: 18 },
-        { key: 18, value: 23 },
-        { key: 19, value: 25 }];
-        */
-
-    d3.csv("CSV/budgetToGross.csv", function (dataset) {
-        var w = $("#budgetToGross").width() - 20;
-        var h = $("#budgetToGross").height() - 40;
-
-        for (var x = 0; x < dataset.length; x++) {
-            dataset[x].value = parseInt(dataset[x].value);
-            dataset[x].key = parseInt(dataset[x].key);
-        }
-
-        console.log(dataset);
-
-        var xScale = d3.scale.ordinal()
-                        .rangeRoundBands([0, w], 0.05);
-
-        var yScale = d3.scale.linear()
-                        .range([0, h]);
-
-        var xAxis = d3.svg.axis()
-        .scale(xScale)
-        .orient("bottom")
-        .ticks(0);
-
-        var yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient("left")
-            .ticks(10);
-
-        xScale.domain(dataset.map(function (d) { return d.key; }));
-        yScale.domain([0, d3.max(dataset, function (d) { return d.value; })]);
-
-        var key = function (d) {
-            return d.key;
-        };
-
-        //Create SVG element
-        var svg = d3.select("#budgetToGross")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", h + 20);
-
-        svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + yScale(d3.max(dataset, function (d) { return d.value; })) + ")")
-        .call(xAxis);
-
-        svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-
-        //Create bars
-        svg.selectAll("rect")
-           .data(dataset, key)
-           .enter()
-           .append("rect")
-           .attr("x", function (d, i) {
-               return xScale(d.key);
-           })
-           .attr("y", function (d) {
-               return h - yScale(d.value);
-           })
-           .attr("width", xScale.rangeBand())
-           .attr("height", function (d) {
-               return yScale(d.value);
-           })
-           .attr("fill", function (d) {
-               return "blue";
-           })
-
-            //Tooltip
-            .on("mouseover", function (d) {
-                //Get this bar's x/y values, then augment for the tooltip
-                var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-                var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
-
-                //Update Tooltip Position & value
-                d3.select("#tooltip")
-                    .style("left", xPosition + "px")
-                    .style("top", yPosition + "px")
-                    .select("#value")
-                    .text(d.value);
-                d3.select("#tooltip").classed("hidden", false)
-            })
-            .on("mouseout", function () {
-                //Remove the tooltip
-                d3.select("#tooltip").classed("hidden", true);
-            });
-    });
 }
 
 
@@ -248,6 +127,7 @@ function budgetScoreLine() {
     var w = $('#budgetToScore').width() - m[1] - m[3]; // width
     var h = 400 - m[0] - m[2]; // height
 
+    // Load the csv
     d3.csv("CSV/averageBudgetToScore.csv", function (data) {
 
         console.log(data);
@@ -261,6 +141,7 @@ function budgetScoreLine() {
             }
         }
 
+        // Get the min and max of range and domain
         var lineMaxX = d3.max(data, function (d) { return d.budget; });
         var lineMinX = d3.min(data, function (d) { return d.budget; });
         var lineMaxY = d3.max(data, function (d) { return d.score; });
@@ -268,27 +149,16 @@ function budgetScoreLine() {
 
         console.log(lineMaxX);
 
-        // X scale will fit all values from data[] within pixels 0-w
         var xScale = d3.scale.linear().domain([0, lineMaxX]).range([0, w]);
-        // Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
         var yScale = d3.scale.linear().domain([0, lineMaxY]).range([h, 0]);
-        // automatically determining max range can work something like this
-        // var y = d3.scale.linear().domain([0, d3.max(data)]).range([h, 0]);
 
         // create a line function that can convert data[] into x and y points
         var line = d3.svg.line()
         // assign the X function to plot our line as we wish
         .x(function (d) {
-            // verbose logging to show what's actually being done
-            //  console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
-            // return the X coordinate where we want to plot this datapoint
-            console.log(d);
             return xScale(d.budget);
         })
             .y(function (d) {
-                // verbose logging to show what's actually being done
-                //  console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
-                // return the Y coordinate where we want to plot this datapoint
                 return yScale(d.score);
             });
 
@@ -299,10 +169,10 @@ function budgetScoreLine() {
             .append("svg:g")
             .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-        // create yAxis
-        var xAxis = d3.svg.axis().scale(xScale).tickSize(-h).tickSubdivide(true);
-        // Add the x-axis.
 
+        var xAxis = d3.svg.axis().scale(xScale).tickSize(-h).tickSubdivide(true);
+
+        // Define the overlay that will handle the mouseover
         var rect = graph.append("rect").attr({
             w: 0,
             h: 0,
@@ -316,8 +186,6 @@ function budgetScoreLine() {
             .attr("transform", "translate(0," + h + ")")
             .call(xAxis);
 
-
-
         var yAxisLeft = d3.svg.axis().scale(yScale).ticks(4).orient("left");
 
         graph.append("g")
@@ -325,14 +193,11 @@ function budgetScoreLine() {
             .attr("transform", "translate(-25,0)")
             .call(yAxisLeft);
 
-
+        // Create the line with the data
         var mainLine = graph.append("path").datum(data).attr("d", line);
 
-        //console.log(line(data));        
-
-
+        // Vertical lines that will follow the mouse hover
         var verticalLine = graph.append('line')
-        // .attr('transform', 'translate(100, 50)')
         .attr({
             'x1': 0,
             'y1': 0,
@@ -342,6 +207,7 @@ function budgetScoreLine() {
             .attr("stroke", "steelblue")
             .attr('class', 'verticalLine');
 
+        // Circle that will follow the mouseover
         circle = graph.append("circle")
             .attr("opacity", 0)
             .attr({
@@ -350,8 +216,10 @@ function budgetScoreLine() {
 
             });
 
+        // Mouse move function for rectangle that is overlaid over the entire graph
         rect.on('mousemove', function () {
 
+            // Get position
             var xPos = d3.mouse(this)[0];
             d3.select(".verticalLine").attr("transform", function () {
                 return "translate(" + xPos + ",0)";
@@ -363,6 +231,8 @@ function budgetScoreLine() {
             var beginning = x,
                 end = pathLength,
                 target;
+
+            // Find the position of the mouse
             while (true) {
                 target = Math.floor((beginning + end) / 2);
                 pos = mainLine.node().getPointAtLength(target);
@@ -373,11 +243,13 @@ function budgetScoreLine() {
                 else if (pos.x < x) beginning = target;
                 else break; //position found
             }
+
+            // Show the circle
             circle.attr("opacity", 1)
                 .attr("cx", x)
                 .attr("cy", pos.y);
 
-
+            // Debug loggin
             console.log("x and y coordinate where vertical line intersects graph: " + [pos.x, pos.y]);
             console.log("data where vertical line intersects graph: " + [xScale.invert(pos.x), yScale.invert(pos.y)]);
 
@@ -405,6 +277,7 @@ function DonutCharts() {
         "right": 20
     };
 
+    // Get the categories
     var getCatNames = function (dataset) {
         var catNames = new Array();
 
@@ -415,39 +288,17 @@ function DonutCharts() {
         return catNames;
     }
 
-    var createLegend = function (catNames) {
-        var legends = charts.select('.legend')
-                        .selectAll('g')
-                            .data(catNames)
-                        .enter().append('g')
-                            .attr('transform', function (d, i) {
-                                return 'translate(' + (i * 150 + 10) + ', 10)';
-                            });
-
-        legends.append('circle')
-            .attr('class', 'legend-icon')
-            .attr('r', 6)
-            .style('fill', function (d, i) {
-                return color(i);
-            });
-
-        legends.append('text')
-            .attr('dx', '1em')
-            .attr('dy', '.3em')
-            .text(function (d) {
-                return d;
-            });
-    }
-
+    // Center of the pie
     var createCenter = function (pie) {
 
         var eventObj = {
+            // When you mouseover the center of the pie the circle expands
             'mouseover': function (d, i) {
                 d3.select(this)
                     .transition()
                     .attr("r", chart_r * 0.65);
             },
-
+            // When you mouseout the circle returns to original size
             'mouseout': function (d, i) {
                 d3.select(this)
                     .transition()
@@ -455,7 +306,7 @@ function DonutCharts() {
                     .ease('bounce')
                     .attr("r", chart_r * 0.6);
             },
-
+            // Click to reset selections
             'click': function (d, i) {
                 var paths = charts.selectAll('.clicked');
                 pathAnim(paths, 0);
@@ -472,6 +323,7 @@ function DonutCharts() {
             .style("fill", "#E7E7E7")
             .on(eventObj);
 
+        // Text in the middle
         donuts.append('text')
                 .attr('class', 'center-txt type')
                 .attr('y', chart_r * -0.16)
@@ -480,6 +332,7 @@ function DonutCharts() {
                 .text(function (d, i) {
                     return d.type;
                 });
+        // Text that will be updated based on the selections
         donuts.append('text')
                 .attr('class', 'center-txt value')
                 .attr('text-anchor', 'middle');
@@ -491,10 +344,11 @@ function DonutCharts() {
     }
 
     var setCenterText = function (thisDonut) {
+        // Get all of the selected data
         var sum = d3.sum(thisDonut.selectAll('.clicked').data(), function (d) {
             return d.data.val;
         });
-
+        // Set values based on the selections
         thisDonut.select('.value')
             .text(function (d) {
                 return (sum) ? sum.toFixed(1) + d.unit
@@ -506,7 +360,7 @@ function DonutCharts() {
                             : '';
             });
     }
-
+    // Clear the center text and reset the number of movies to total
     var resetAllCenterText = function () {
         charts.selectAll('.value')
             .text(function (d) {
@@ -515,7 +369,7 @@ function DonutCharts() {
         charts.selectAll('.percentage')
             .text('');
     }
-
+    // Defines the animation of the pie slices when they are selected and deselected
     var pathAnim = function (path, dir) {
         switch (dir) {
             case 0:
@@ -541,7 +395,7 @@ function DonutCharts() {
     var updateDonut = function () {
 
         var eventObj = {
-
+            // Pulls the piece of the pir out when moused over
             'mouseover': function (d, i, j) {
                 pathAnim(d3.select(this), 1);
 
@@ -560,7 +414,7 @@ function DonutCharts() {
                         }
                     })
             },
-
+            // Returns the piece of the pie to the original position when mouse leaves
             'mouseout': function (d, i, j) {
                 var thisPath = d3.select(this);
                 var user = d.data.cat;
@@ -579,7 +433,7 @@ function DonutCharts() {
                 }
                 setCenterText(thisDonut);
             },
-
+            // Keeps the piece of the pie out when it is clicked and begins to add data together for the center text if multiple are clicked
             'click': function (d, i, j) {
                 var thisDonut = charts.select('.type' + j);
 
@@ -645,9 +499,11 @@ function DonutCharts() {
             .append('svg:path')
                 .attr('d', arc)
                 .style('fill', function (d, i) {
+                    // Creates a d3 color set and assigns categories to individual colors
                     return color(i);
                 })
                 .style('stroke', '#FFFFFF')
+                // Attach the mouse events
                 .on(eventObj);
 
         paths.exit().remove();
@@ -690,17 +546,10 @@ function DonutCharts() {
         console.log("Creating Pies");
         console.log(dataset);
         var $charts = $('#genrePie');
+        // Dimensions
         chart_m = $charts.innerWidth() / dataset.length / 5 * 0.14; // dataset.length / 2 * 0.14;
         chart_r = $charts.innerWidth() / dataset.length / 5 * 0.65; // dataset.length / 2 * 0.85;
         labelr = chart_r + 20;
-
-        /*
-        charts.append('svg')
-            .attr('class', 'legend')
-            .attr('width', '100%')
-            .attr('height', 50)
-            .attr('transform', 'translate(0, -100)');
-            */
 
         var donut = charts.selectAll('.donut')
                         .data(dataset)
@@ -733,6 +582,7 @@ createGenrePie();
 function createGenrePie() {
     console.log("Creating Genre Pie");
 
+    // Get CSV data
     d3.csv("CSV/topGenres.csv", function (genreTotals) {
         var total = 0;
         console.log(genreTotals);
@@ -743,6 +593,7 @@ function createGenrePie() {
         }
         console.log("Genre Total: " + total);
 
+        // Format the data
         var newData = [{
             "type": "Genre",
             "unit": " Num Movies",
@@ -750,59 +601,8 @@ function createGenrePie() {
             "total": total
         }];
 
+        // Create a new donut object and pass the data to it
         var donuts = new DonutCharts();
         donuts.create(newData);
     });
 }
-
-/*
-function createGenrePie() {
-
-    console.log("Creating Genre Pie");
-
-    d3.csv("CSV/topGenres.csv", function (genreTotals) {
-
-        console.log(genreTotals);
-
-        var widthDiv = $('#genrePie').width();
-        var margin = { top: 20, right: 20, bottom: 40, left: 80 },
-        width = widthDiv - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom,
-        radius = height / 2;
-        var total = 0;
-        for (var x = 0; x < genreTotals.length; x++) {
-            total += genreTotals[x].count;
-        }
-
-        var color = d3.scale.category20b();
-
-        var svg = d3.select("#genrePie").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-          .append('g')
-            .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
-
-        var arc = d3.svg.arc()
-          .innerRadius(0)
-          .outerRadius(radius);
-
-        var pie = d3.layout.pie()
-          .value(function (d) { return d.count; })
-          .sort(null);
-
-        var path = svg.selectAll('path')
-          .data(pie(genreTotals))
-          .enter()
-          .append('path')
-          .attr('d', arc)
-          .attr('fill', function (d, i) {
-              return color(d.data.genres);
-          })
-        .append('svg:title')
-            .text(function (d) {
-                return d.data.genres + "-" + d.value + " movies - " + (d.value / total * 100) + "%";
-            });
-
-    });
-}
-*/
